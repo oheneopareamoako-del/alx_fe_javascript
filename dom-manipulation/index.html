@@ -1,56 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Dynamic Quote Generator</title>
-  <style>
-    body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial; background:#f4f7fb; margin:0; padding:32px; display:flex; justify-content:center; }
-    .container { width:780px; background:#fff; padding:22px; border-radius:12px; box-shadow:0 8px 20px rgba(20,20,40,0.06); }
-    h1{margin:0 0 12px 0}
-    #quoteDisplay { min-height:80px; padding:14px; border-radius:8px; background:#f8fbff; border:1px solid #e6eefc; margin-bottom:12px; }
-    .controls { display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-bottom:10px; }
-    input[type="text"]{ padding:8px 10px; border-radius:6px; border:1px solid #d8dee9; }
-    button { padding:8px 12px; border-radius:8px; border:none; cursor:pointer; background:#2563eb; color:white; font-weight:600; }
-    small{ color:#556; display:block; margin-top:8px;}
-    select{ padding:8px; border-radius:6px; border:1px solid #d8dee9; }
-    .meta { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
-    .file-input { display:inline-block; }
-  </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Dynamic Quote Generator</h1>
+  <h1>Dynamic Quote Generator</h1>
+  
+  <div id="quoteDisplay"></div>
+  <button id="newQuote">Show New Quote</button>
 
-    <div id="quoteDisplay">Click "Show New Quote" to start!</div>
+  <!-- Import & Export Controls -->
+  <!-- Import & Export Controls -->
+<div>
+  <button id="exportBtn" onclick="exportToJsonFile()">Export Quotes</button>
+  <input type="file" id="importFile" accept=".json" onchange="importFromJsonFile(event)" />
+</div>
 
-    <div class="controls">
-      <button id="newQuote">Show New Quote</button>
-
-      <label>
-        Filter:
-        <select id="categoryFilter">
-          <option value="all">All</option>
-        </select>
-      </label>
-
-      <!-- Export / Import controls -->
-      <button id="exportBtn" title="Export quotes to JSON">Export JSON</button>
-
-      <!-- The import file input triggers importFromJsonFile(event) in script.js -->
-      <label class="file-input">
-        <input id="importFile" type="file" accept=".json" />
-      </label>
-    </div>
-
-    <hr />
-
-    <h3>Add a new quote</h3>
-    <!-- createAddQuoteForm() will also create inputs dynamically, but having a container gives tests a stable DOM -->
-    <div id="addQuoteContainer"></div>
-
-    <small>Quotes are saved to localStorage. Last viewed quote stored in sessionStorage for this tab.</small>
-  </div>
 
   <script src="script.js"></script>
 </body>
