@@ -109,6 +109,46 @@ function importFromJsonFile(event) {
   };
   fileReader.readAsText(event.target.files[0]);
 }
+// ====== CATEGORY FILTERING SYSTEM ======
+function populateCategories() {
+  const categoryFilter = document.getElementById('categoryFilter');
+  const categories = [...new Set(quotes.map(q => q.category))];
+  categoryFilter.innerHTML = '<option value="all">All Categories</option>';
+
+  categories.forEach(category => {
+    const option = document.createElement('option');
+    option.value = category;
+    option.textContent = category;
+    categoryFilter.appendChild(option);
+  });
+
+  const lastFilter = localStorage.getItem('lastSelectedCategory');
+  if (lastFilter) {
+    categoryFilter.value = lastFilter;
+    filterQuotes();
+  }
+}
+
+function filterQuotes() {
+  const categoryFilter = document.getElementById('categoryFilter');
+  const selectedCategory = categoryFilter.value;
+  const quoteDisplay = document.getElementById('quoteDisplay');
+
+  localStorage.setItem('lastSelectedCategory', selectedCategory);
+
+  const filteredQuotes =
+    selectedCategory === 'all'
+      ? quotes
+      : quotes.filter(q => q.category === selectedCategory);
+
+  if (filteredQuotes.length > 0) {
+    const randomQuote =
+      filteredQuotes[Math.floor(Math.random() * filteredQuotes.length)];
+    quoteDisplay.textContent = `"${randomQuote.text}" - (${randomQuote.category})`;
+  } else {
+    quoteDisplay.textContent = 'No quotes found for this category.';
+  }
+}
 
 // Step 8: Initialize app
 document.getElementById("newQuote").addEventListener("click", showRandomQuote);
