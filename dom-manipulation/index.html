@@ -1,49 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Dynamic Quote Generator</title>
   <style>
-    body {
-      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-      background: #f4f7fb;
-      margin: 0;
-      padding: 40px;
-      display: flex;
-      align-items: start;
-      justify-content: center;
-    }
-    .container {
-      width: 760px;
-      background: #fff;
-      padding: 24px;
-      border-radius: 12px;
-      box-shadow: 0 6px 18px rgba(20,20,40,0.06);
-    }
-    h1 { margin-top: 0; }
-    #quoteDisplay {
-      min-height: 90px;
-      padding: 18px;
-      border-radius: 8px;
-      background: #f8fbff;
-      border: 1px solid #e6eefc;
-      margin-bottom: 12px;
-    }
-    .controls { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
-    input[type="text"] { padding:8px 10px; border-radius:6px; border:1px solid #d8dee9; width: calc(50% - 8px); }
-    button {
-      padding: 8px 12px;
-      border-radius: 8px;
-      border: none;
-      cursor: pointer;
-      background: #2563eb;
-      color: white;
-      font-weight: 600;
-    }
-    small { color: #556; display:block; margin-top:8px; }
-    .meta { display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; margin-top:12px; }
-    select { padding:8px; border-radius:6px; border:1px solid #d8dee9; }
+    body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial; background:#f4f7fb; margin:0; padding:32px; display:flex; justify-content:center; }
+    .container { width:780px; background:#fff; padding:22px; border-radius:12px; box-shadow:0 8px 20px rgba(20,20,40,0.06); }
+    h1{margin:0 0 12px 0}
+    #quoteDisplay { min-height:80px; padding:14px; border-radius:8px; background:#f8fbff; border:1px solid #e6eefc; margin-bottom:12px; }
+    .controls { display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-bottom:10px; }
+    input[type="text"]{ padding:8px 10px; border-radius:6px; border:1px solid #d8dee9; }
+    button { padding:8px 12px; border-radius:8px; border:none; cursor:pointer; background:#2563eb; color:white; font-weight:600; }
+    small{ color:#556; display:block; margin-top:8px;}
+    select{ padding:8px; border-radius:6px; border:1px solid #d8dee9; }
+    .meta { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+    .file-input { display:inline-block; }
   </style>
 </head>
 <body>
@@ -55,24 +27,29 @@
     <div class="controls">
       <button id="newQuote">Show New Quote</button>
 
-      <!-- Category filter -->
       <label>
         Filter:
         <select id="categoryFilter">
           <option value="all">All</option>
         </select>
       </label>
+
+      <!-- Export / Import controls -->
+      <button id="exportBtn" title="Export quotes to JSON">Export JSON</button>
+
+      <!-- The import file input triggers importFromJsonFile(event) in script.js -->
+      <label class="file-input">
+        <input id="importFile" type="file" accept=".json" />
+      </label>
     </div>
 
     <hr />
 
     <h3>Add a new quote</h3>
-    <div style="display:flex; gap:8px; margin-bottom:8px;">
-      <input id="newQuoteText" type="text" placeholder="Enter a new quote" />
-      <input id="newQuoteCategory" type="text" placeholder="Enter quote category" />
-      <button id="addQuoteBtn">Add Quote</button>
-    </div>
-    <small>Added quotes persist while this page is open. Try the optional localStorage enhancement in the README below.</small>
+    <!-- createAddQuoteForm() will also create inputs dynamically, but having a container gives tests a stable DOM -->
+    <div id="addQuoteContainer"></div>
+
+    <small>Quotes are saved to localStorage. Last viewed quote stored in sessionStorage for this tab.</small>
   </div>
 
   <script src="script.js"></script>
