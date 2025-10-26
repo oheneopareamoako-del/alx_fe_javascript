@@ -182,4 +182,96 @@ function importFromJsonFile(event) {
   };
   fileReader.readAsText(event.target.files[0]);
 }
+// === Import Quotes from JSON ===
+function importFromJsonFile(event) {
+  const fileReader = new FileReader();
+  fileReader.onload = function(e) {
+    try {
+      const importedQuotes = JSON.parse(e.target.result);
+      quotes.push(...importedQuotes);
+      saveQuotes(); // make sure you already have this defined
+      alert("Quotes imported successfully!");
+    } catch (error) {
+      alert("Invalid JSON file.");
+    }
+  };
+  fileReader.readAsText(event.target.files[0]);
+}
+
+// ✅ === Step 9: Simulate Server Sync ===
+
+// Mock server URL (using JSONPlaceholder)
+const SERVER_URL = "https://jsonplaceholder.typicode.com/posts";
+
+// === Simulate fetching quotes from server ===
+async function fetchQuotesFromServer() {
+  try {
+    const response = await fetch(SERVER_URL);
+    const serverData = await response.json();
+
+    // Simulate server quotes
+    const serverQuotes = serverData.slice(0, 5).map(item => ({
+      text: item.title,
+      author: `User ${item.userId}`
+    }));
+
+    handleServerSync(serverQuotes);
+  } catch (error) {
+    console.error("Error fetching from server:", error);
+  }
+}
+
+// === Handle Sync and Conflict Resolution ===
+function handleServerSync(serverQuotes) {
+  const localQuotes = JSON.parse(localStorage.getItem("quotes")) || [];
+
+  // Conflict resolution: Server data takes precedence
+  const mergedQuotes = [...serverQuotes, ...localQuotes.filter(
+    lq => !serverQuotes.some(sq => sq.text === lq.text)
+  )];
+
+  localStorage.setItem("quotes", JSON.stringify(mergedQuotes));
+  quotes = mergedQuotes;
+
+  // Notify user
+  showSyncNotification("Quotes synced with server. Server data prioritized.");
+}
+
+// === Simulate sending new quotes to the server ===
+async function pushQuotesToServer() {
+  try {
+    for (const quote of quotes) {
+      await fetch(SERVER_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(quote)
+      });
+    }
+    console.log("Local quotes sent to server.");
+  } catch (error) {
+    console.error("Error pushing quotes:", error);
+  }
+}
+
+// === User Notification (Conflict/Sync Info) ===
+function showSyncNotification(message) {
+  const notice = document.createElement("div");
+  notice.innerText = message;
+  notice.style.position = "fixed";
+  notice.style.bottom = "20px";
+  notice.style.right = "20px";
+  notice.style.background = "#333";
+  notice.style.color = "#fff";
+  notice.style.padding = "10px 20px";
+  notice.style.borderRadius = "8px";
+  notice.style.zIndex = "1000";
+  document.body.appendChild(notice);
+
+  setTimeout(() => {
+    notice.remove();
+  }, 4000);
+}
+
+// === Periodic Sync ===
+setInterval(fetchQuotesFromServer, 30000); // Fetch every 30 seconds
 

@@ -25,6 +25,11 @@
   <button id="exportBtn" onclick="exportToJsonFile()">Export Quotes</button>
   <input type="file" id="importFile" accept=".json" onchange="importFromJsonFile(event)" />
 </div>
+<!-- Sync Controls -->
+<div>
+  <button id="syncQuotes" onclick="syncWithServer()">Sync with Server</button>
+  <p id="syncStatus" style="color: green; font-weight: bold;"></p>
+</div>
 
 
   <script src="script.js"></script>
