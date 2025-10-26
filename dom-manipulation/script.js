@@ -197,61 +197,76 @@ function importFromJsonFile(event) {
   };
   fileReader.readAsText(event.target.files[0]);
 }
-// === Step 9: Sync Quotes with Server ===
-async function syncQuotes() {
+// === Step 9: Server Sync Simulation ===
+
+// Fetch quotes from mock API (e.g., JSONPlaceholder)
+async function fetchQuotesFromServer() {
   const SERVER_URL = "https://jsonplaceholder.typicode.com/posts";
-
   try {
-    // Fetch quotes from the "server"
     const response = await fetch(SERVER_URL);
-    const serverData = await response.json();
+    const data = await response.json();
 
-    // Simulate server quotes
-    const serverQuotes = serverData.slice(0, 5).map(item => ({
+    // Simulate server quotes based on API data
+    return data.slice(0, 5).map(item => ({
       text: item.title,
-      author: `User ${item.userId}`
+      category: `User ${item.userId}`
     }));
-
-    // Get local quotes
-    const localQuotes = JSON.parse(localStorage.getItem("quotes")) || [];
-
-    // Conflict resolution: server data takes precedence
-    const mergedQuotes = [
-      ...serverQuotes,
-      ...localQuotes.filter(lq => !serverQuotes.some(sq => sq.text === lq.text))
-    ];
-
-    // Update local storage and in-memory data
-    localStorage.setItem("quotes", JSON.stringify(mergedQuotes));
-    quotes = mergedQuotes;
-
-    // Notify user
-    showSyncNotification("Quotes synced successfully! (Server data prioritized)");
   } catch (error) {
-    console.error("Error syncing quotes:", error);
-    showSyncNotification("Sync failed. Please check your connection.");
+    console.error("Error fetching quotes from server:", error);
+    showSyncNotification("❌ Failed to fetch quotes from server");
+    return [];
   }
 }
 
-// === Show sync notifications ===
+// Post new quote to mock API
+async function postQuoteToServer(quote) {
+  const SERVER_URL = "https://jsonplaceholder.typicode.com/posts";
+  try {
+    await fetch(SERVER_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(quote)
+    });
+    console.log("Quote posted to server:", quote);
+  } catch (error) {
+    console.error("Error posting quote:", error);
+  }
+}
+
+// Main sync function
+async function syncQuotes() {
+  const serverQuotes = await fetchQuotesFromServer();
+  const localQuotes = JSON.parse(localStorage.getItem("quotes")) || [];
+
+  // Conflict resolution: server data takes precedence
+  const mergedQuotes = [
+    ...serverQuotes,
+    ...localQuotes.filter(lq => !serverQuotes.some(sq => sq.text === lq.text))
+  ];
+
+  localStorage.setItem("quotes", JSON.stringify(mergedQuotes));
+  quotes = mergedQuotes;
+
+  showSyncNotification("✅ Quotes synced successfully! (Server data prioritized)");
+}
+
+// Display sync notification on screen
 function showSyncNotification(message) {
   const notice = document.createElement("div");
-  notice.innerText = message;
+  notice.textContent = message;
   notice.style.position = "fixed";
   notice.style.bottom = "20px";
   notice.style.right = "20px";
   notice.style.background = "#333";
   notice.style.color = "#fff";
-  notice.style.padding = "10px 20px";
+  notice.style.padding = "10px 15px";
   notice.style.borderRadius = "8px";
   notice.style.zIndex = "1000";
   document.body.appendChild(notice);
 
-  setTimeout(() => {
-    notice.remove();
-  }, 4000);
+  setTimeout(() => notice.remove(), 4000);
 }
 
-// === Periodic sync every 30 seconds ===
+// Periodically sync every 30 seconds
 setInterval(syncQuotes, 30000);
 
