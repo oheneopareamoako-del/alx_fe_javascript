@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>Dynamic Quote Generator</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: #f4f7fb;
+      margin: 0;
+      padding: 40px;
+      display: flex;
+      align-items: start;
+      justify-content: center;
+    }
+    .container {
+      width: 760px;
+      background: #fff;
+      padding: 24px;
+      border-radius: 12px;
+      box-shadow: 0 6px 18px rgba(20,20,40,0.06);
+    }
+    h1 { margin-top: 0; }
+    #quoteDisplay {
+      min-height: 90px;
+      padding: 18px;
+      border-radius: 8px;
+      background: #f8fbff;
+      border: 1px solid #e6eefc;
+      margin-bottom: 12px;
+    }
+    .controls { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+    input[type="text"] { padding:8px 10px; border-radius:6px; border:1px solid #d8dee9; width: calc(50% - 8px); }
+    button {
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      background: #2563eb;
+      color: white;
+      font-weight: 600;
+    }
+    small { color: #556; display:block; margin-top:8px; }
+    .meta { display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; margin-top:12px; }
+    select { padding:8px; border-radius:6px; border:1px solid #d8dee9; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Dynamic Quote Generator</h1>
+
+    <div id="quoteDisplay">Click "Show New Quote" to start!</div>
+
+    <div class="controls">
+      <button id="newQuote">Show New Quote</button>
+
+      <!-- Category filter -->
+      <label>
+        Filter:
+        <select id="categoryFilter">
+          <option value="all">All</option>
+        </select>
+      </label>
+    </div>
+
+    <hr />
+
+    <h3>Add a new quote</h3>
+    <div style="display:flex; gap:8px; margin-bottom:8px;">
+      <input id="newQuoteText" type="text" placeholder="Enter a new quote" />
+      <input id="newQuoteCategory" type="text" placeholder="Enter quote category" />
+      <button id="addQuoteBtn">Add Quote</button>
+    </div>
+    <small>Added quotes persist while this page is open. Try the optional localStorage enhancement in the README below.</small>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
+
